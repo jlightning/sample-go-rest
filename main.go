@@ -25,7 +25,7 @@ func main() {
 	newsService := services.NewNewsService(newsRepository, newsTopicRepository)
 	topicService := services.NewTopicService(topicRepository)
 
-	handlers.NewNewsHandler(newsService).Register(mux)
+	handlers.NewNewsHandler(newsService, topicService).Register(mux)
 	handlers.NewTopicHandler(topicService).Register(mux)
 
 	log.Println("Listening...")

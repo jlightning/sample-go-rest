@@ -11,6 +11,7 @@ type ITopicService interface {
 	InsertItem(topic entities.Topic) error
 	UpdateItem(id int, topic entities.Topic) error
 	DeleteItem(id int) error
+	GetListByNewsId(newsId int) ([]entities.Topic, error)
 }
 
 type topicService struct {
@@ -39,4 +40,8 @@ func (service *topicService) UpdateItem(id int, topic entities.Topic) error {
 
 func (service *topicService) DeleteItem(id int) error {
 	return service.topicRepository.DeleteItem(id)
+}
+
+func (service *topicService) GetListByNewsId(newsId int) ([]entities.Topic, error) {
+	return service.topicRepository.GetListByNewsId(newsId)
 }

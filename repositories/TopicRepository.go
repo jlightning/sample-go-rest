@@ -13,6 +13,8 @@ type ITopicRepository interface {
 	InsertItem(Topic entities.Topic) error
 	UpdateItem(id int, Topic entities.Topic) error
 	DeleteItem(id int) error
+
+	GetListByNewsId(newsId int) ([]entities.Topic, error)
 }
 
 type TopicRepostory struct {
@@ -93,4 +95,29 @@ func (repository *TopicRepostory) DeleteItem(id int) error {
 
 	_, err = repository.db.Exec(sql, args...)
 	return err
+}
+
+func (repository *TopicRepostory) GetListByNewsId(newsId int) ([]entities.Topic, error) {
+	sql, args, err := squirrel.Select("topic.*").From("topic").
+		Join("news_topic ON news_topic.topic_id = topic.id").
+		Where(squirrel.Eq{"news_topic.news_id": newsId}).
+		ToSql()
+	if err != nil {
+		return nil, err
+	}
+	result, err := repository.db.Query(sql, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	list := []entities.Topic{}
+
+	for result.Next() {
+		var topic entities.Topic
+		result.Scan(&topic.Id, &topic.Title)
+
+		list = append(list, topic)
+	}
+
+	return list, nil
 }
