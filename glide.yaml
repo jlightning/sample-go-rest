@@ -1,0 +1,6 @@
+package: sample_go_rest
+import:
+- package: github.com/go-sql-driver/mysql
+  version: v1.3.0
+- package: github.com/gorilla/mux
+- package: github.com/Masterminds/squirrel
