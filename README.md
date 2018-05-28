@@ -61,7 +61,7 @@ type Topic struct {
 - `GET /topics/{id}` - get topic by id
 - `GET /topics/{id}/news` - get all news of a topic
 - `GET /topics/{id}/news/{newsId}` - get 1 specific news of a topic by id
-- `POST /topics` - add a new topics
+- `POST /topics` - add a new topic
 - `PUT /topics/{id}` - update a topic
 - `DELETE /topics/{id}` - delete a topic
 - `POST /topics/{id}/news/{newsId}` - add a new relationship between news and topic (no need body)
