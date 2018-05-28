@@ -8,7 +8,7 @@ This is an example showing how to create restful API with go and mysql
 - `github.com/go-ini/ini` - ini config helper
 
 ### Installation
-- Copy config.sample.ini file and change configuration to match your environment
+- Copy `config.sample.ini` to `config.ini` file and change configuration to match your environment
 - This project use glide for handling dependency, read more on: https://github.com/bumptech/glide.
 ```bash
 glide install
