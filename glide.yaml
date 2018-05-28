@@ -6,3 +6,5 @@ import:
   version: v1.6.2
 - package: github.com/Masterminds/squirrel
   version: v1.0
+- package: github.com/go-ini/ini
+  version: v1.37.0
