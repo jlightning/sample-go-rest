@@ -5,6 +5,7 @@ import (
 	"sample-go-rest/entities"
 	"github.com/Masterminds/squirrel"
 	"errors"
+	"time"
 )
 
 type ITopicRepository interface {
@@ -82,7 +83,10 @@ func (repository *TopicRepostory) InsertItem(topic entities.Topic) error {
 }
 
 func (repository *TopicRepostory) UpdateItem(id int, topic entities.Topic) error {
-	sql, args, err := squirrel.Update("topic").SetMap(map[string]interface{}{"title": topic.Title}).Where(squirrel.Eq{"id": id}).ToSql()
+	sql, args, err := squirrel.Update("topic").
+		SetMap(map[string]interface{}{"title": topic.Title, "updated_at": time.Now()}).
+		Where(squirrel.Eq{"id": id}).
+		ToSql()
 	if err != nil {
 		return err
 	}

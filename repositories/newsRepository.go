@@ -5,6 +5,7 @@ import (
 	"sample-go-rest/entities"
 	"github.com/Masterminds/squirrel"
 	"errors"
+	"time"
 )
 
 type INewsRepository interface {
@@ -72,7 +73,10 @@ func (repository *newsRepostory) GetItemById(id int) (*entities.News, error) {
 }
 
 func (repository *newsRepostory) InsertItem(news entities.News) error {
-	sql, args, err := squirrel.Insert("news").Columns("title", "content").Values(news.Title, news.Content).ToSql()
+	sql, args, err := squirrel.Insert("news").
+		Columns("title", "content", "status").
+		Values(news.Title, news.Content, news.Status).
+		ToSql()
 	if err != nil {
 		return err
 	}
@@ -82,7 +86,10 @@ func (repository *newsRepostory) InsertItem(news entities.News) error {
 }
 
 func (repository *newsRepostory) UpdateItem(id int, news entities.News) error {
-	sql, args, err := squirrel.Update("news").SetMap(map[string]interface{}{"title": news.Title, "content": news.Content}).Where(squirrel.Eq{"id": id}).ToSql()
+	sql, args, err := squirrel.Update("news").
+		SetMap(map[string]interface{}{"title": news.Title, "content": news.Content, "status": news.Status, "updated_at": time.Now()}).
+		Where(squirrel.Eq{"id": id}).
+		ToSql()
 	if err != nil {
 		return err
 	}

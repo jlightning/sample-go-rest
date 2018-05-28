@@ -18,7 +18,7 @@ func NewTopicHandler(newService services.ITopicService, newsService services.INe
 	return &topicHandler{topicService: newService, newsService: newsService}
 }
 
-func (handler *topicHandler) Register(mux *mux.Router) {
+func (handler *topicHandler) RegisterToRouter(mux *mux.Router) {
 	mux.HandleFunc("/topics", wrapFunc(handler.handleList)).Methods(http.MethodGet)
 	mux.HandleFunc("/topics/{id:[0-9]+}", wrapFunc(handler.handleItem)).Methods(http.MethodGet)
 	mux.HandleFunc("/topics", wrapFunc(handler.handleInsert)).Methods(http.MethodPost)

@@ -13,9 +13,13 @@ import (
 )
 
 type config struct {
+	server struct {
+		port string
+	}
 	database struct {
 		host     string
 		port     string
+		database string
 		username string
 		password string
 	}
@@ -25,11 +29,11 @@ func main() {
 	cfg := loadConfig()
 	dbConfig := cfg.database
 
-	db, err := sql.Open("mysql", dbConfig.username+":"+dbConfig.password+"@tcp("+dbConfig.host+":"+dbConfig.port+")/sample_rest?charset=utf8")
+	db, err := sql.Open("mysql", dbConfig.username+":"+dbConfig.password+"@tcp("+dbConfig.host+":"+dbConfig.port+")/"+dbConfig.database+"?charset=utf8")
 	if err != nil {
 		panic(err)
 	}
-	mux := mux.NewRouter().StrictSlash(true)
+	router := mux.NewRouter().StrictSlash(true)
 
 	newsRepository := repositories.NewNewsRepository(db)
 	topicRepository := repositories.NewTopicRepository(db)
@@ -38,11 +42,11 @@ func main() {
 	newsService := services.NewNewsService(newsRepository, newsTopicRepository)
 	topicService := services.NewTopicService(topicRepository)
 
-	handlers.NewNewsHandler(newsService, topicService).Register(mux)
-	handlers.NewTopicHandler(topicService, newsService).Register(mux)
+	handlers.NewNewsHandler(newsService, topicService).RegisterToRouter(router)
+	handlers.NewTopicHandler(topicService, newsService).RegisterToRouter(router)
 
 	log.Println("Listening...")
-	http.ListenAndServe(":8080", mux)
+	http.ListenAndServe(":"+cfg.server.port, router)
 }
 
 func loadConfig() config {
@@ -52,8 +56,11 @@ func loadConfig() config {
 	}
 
 	var configData config
+	configData.server.port = cfg.Section("server").Key("port").String()
+
 	configData.database.host = cfg.Section("database").Key("host").String()
 	configData.database.port = cfg.Section("database").Key("port").String()
+	configData.database.database = cfg.Section("database").Key("database").String()
 	configData.database.username = cfg.Section("database").Key("username").String()
 	configData.database.password = cfg.Section("database").Key("password").String()
 

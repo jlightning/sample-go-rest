@@ -19,7 +19,7 @@ func NewNewsHandler(newService services.INewsService, topicService services.ITop
 	return &newsHandler{newsService: newService, topicService: topicService}
 }
 
-func (handler *newsHandler) Register(mux *mux.Router) {
+func (handler *newsHandler) RegisterToRouter(mux *mux.Router) {
 	mux.HandleFunc("/news", wrapFunc(handler.handleList)).Methods(http.MethodGet)
 	mux.HandleFunc("/news/{id:[0-9]+}", wrapFunc(handler.handleItem)).Methods(http.MethodGet)
 	mux.HandleFunc("/news", wrapFunc(handler.handleInsert)).Methods(http.MethodPost)
