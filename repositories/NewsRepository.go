@@ -8,7 +8,7 @@ import (
 )
 
 type INewsRepository interface {
-	GetList() ([]entities.News, error)
+	GetList(params map[string][]string) ([]entities.News, error)
 	GetItemById(id int) (*entities.News, error)
 	InsertItem(news entities.News) error
 	UpdateItem(id int, news entities.News) error
@@ -23,8 +23,13 @@ func NewNewsRepository(db *sql.DB) INewsRepository {
 	return &newsRepostory{db: db}
 }
 
-func (repository *newsRepostory) GetList() ([]entities.News, error) {
-	sql, args, err := squirrel.Select("*").From("news").ToSql()
+func (repository *newsRepostory) GetList(params map[string][]string) ([]entities.News, error) {
+	builder := squirrel.Select("*").From("news")
+	builder, err := applyFilterAndPageSize(builder, params)
+	if err != nil {
+		return nil, err
+	}
+	sql, args, err := builder.ToSql()
 	if err != nil {
 		return nil, err
 	}

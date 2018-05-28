@@ -6,7 +6,7 @@ import (
 )
 
 type INewsService interface {
-	GetList() ([]entities.News, error)
+	GetList(params map[string][]string) ([]entities.News, error)
 	GetItemById(id int) (*entities.News, error)
 	InsertItem(news entities.News) error
 	UpdateItem(id int, news entities.News) error
@@ -25,8 +25,8 @@ func NewNewsService(newsRepository repositories.INewsRepository, newsTopicReposi
 	return &newsService{newsRepository: newsRepository, newsTopicRepository: newsTopicRepository}
 }
 
-func (service *newsService) GetList() ([]entities.News, error) {
-	return service.newsRepository.GetList()
+func (service *newsService) GetList(params map[string][]string) ([]entities.News, error) {
+	return service.newsRepository.GetList(params)
 }
 
 func (service *newsService) GetItemById(id int) (*entities.News, error) {

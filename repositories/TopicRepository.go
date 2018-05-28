@@ -8,7 +8,7 @@ import (
 )
 
 type ITopicRepository interface {
-	GetList() ([]entities.Topic, error)
+	GetList(params map[string][]string) ([]entities.Topic, error)
 	GetItemById(id int) (*entities.Topic, error)
 	InsertItem(Topic entities.Topic) error
 	UpdateItem(id int, Topic entities.Topic) error
@@ -26,8 +26,13 @@ func NewTopicRepository(db *sql.DB) ITopicRepository {
 	return &TopicRepostory{db: db}
 }
 
-func (repository *TopicRepostory) GetList() ([]entities.Topic, error) {
-	sql, args, err := squirrel.Select("*").From("topic").ToSql()
+func (repository *TopicRepostory) GetList(params map[string][]string) ([]entities.Topic, error) {
+	builder := squirrel.Select("*").From("topic")
+	builder, err := applyFilterAndPageSize(builder, params)
+	if err != nil {
+		return nil, err
+	}
+	sql, args, err := builder.ToSql()
 	if err != nil {
 		return nil, err
 	}

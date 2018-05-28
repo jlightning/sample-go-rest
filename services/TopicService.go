@@ -6,7 +6,7 @@ import (
 )
 
 type ITopicService interface {
-	GetList() ([]entities.Topic, error)
+	GetList(params map[string][]string) ([]entities.Topic, error)
 	GetItemById(id int) (*entities.Topic, error)
 	InsertItem(topic entities.Topic) error
 	UpdateItem(id int, topic entities.Topic) error
@@ -23,8 +23,8 @@ func NewTopicService(topicRepository repositories.ITopicRepository) ITopicServic
 	return &topicService{topicRepository: topicRepository}
 }
 
-func (service *topicService) GetList() ([]entities.Topic, error) {
-	return service.topicRepository.GetList()
+func (service *topicService) GetList(params map[string][]string) ([]entities.Topic, error) {
+	return service.topicRepository.GetList(params)
 }
 
 func (service *topicService) GetItemById(id int) (*entities.Topic, error) {

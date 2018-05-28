@@ -26,7 +26,7 @@ func (handler *topicHandler) Register(mux *mux.Router) {
 }
 
 func (handler *topicHandler) handleList(request *http.Request) (interface{}, error) {
-	return handler.topicService.GetList()
+	return handler.topicService.GetList(request.URL.Query())
 }
 
 func (handler *topicHandler) handleItem(request *http.Request) (interface{}, error) {

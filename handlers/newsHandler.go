@@ -33,7 +33,8 @@ func (handler *newsHandler) Register(mux *mux.Router) {
 }
 
 func (handler *newsHandler) handleList(request *http.Request) (interface{}, error) {
-	return handler.newsService.GetList()
+	params := request.URL.Query()
+	return handler.newsService.GetList(params)
 }
 
 func (handler *newsHandler) handleItem(request *http.Request) (interface{}, error) {
