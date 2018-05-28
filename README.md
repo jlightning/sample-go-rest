@@ -2,14 +2,14 @@
 This is an example showing how to create restful API with go and mysql
 
 ### Dependency
-- `github.com/go-sql-driver/mysql` - mysql driver
-- `github.com/gorilla/mux` - http router
-- `github.com/Masterminds/squirrel` - mysql query builder
-- `github.com/go-ini/ini` - ini config helper
+- <https://github.com/go-sql-driver/mysql> - mysql driver
+- <https://github.com/gorilla/mux> - http router
+- <https://github.com/Masterminds/squirrel> - mysql query builder
+- <https://github.com/go-ini/ini> - ini config helper
 
 ### Installation
 - Copy `config.sample.ini` to `config.ini` file and change configuration to match your environment
-- This project use glide for handling dependency, read more on: `https://github.com/Masterminds/glide`.
+- This project use glide for handling dependency, read more on: <https://github.com/Masterminds/glide>.
 ```bash
 glide install
 go run main.go
