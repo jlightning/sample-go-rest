@@ -28,7 +28,7 @@ func (handler *newsHandler) Register(mux *mux.Router) {
 
 	mux.HandleFunc("/news/{id:[0-9]+}/topics", wrapFunc(handler.handleListTopic)).Methods(http.MethodGet)
 	mux.HandleFunc("/news/{id:[0-9]+}/topics/{topicId:[0-9]+}", wrapFunc(handler.handleItemTopic)).Methods(http.MethodGet)
-	mux.HandleFunc("/news/{id:[0-9]+}/topics/{topicId:[0-9]+}", wrapFunc(handler.handleAddTopicRelationship)).Methods(http.MethodPut)
+	mux.HandleFunc("/news/{id:[0-9]+}/topics/{topicId:[0-9]+}", wrapFunc(handler.handleAddTopicRelationship)).Methods(http.MethodPost)
 	mux.HandleFunc("/news/{id:[0-9]+}/topics/{topicId:[0-9]+}", wrapFunc(handler.handleDeleteTopicRelationship)).Methods(http.MethodDelete)
 }
 
@@ -123,7 +123,7 @@ func (handler *newsHandler) handleListTopic(request *http.Request) (interface{},
 		return nil, err
 	}
 
-	return handler.topicService.GetListByNewsId(id)
+	return handler.topicService.GetListByNewsId(id, request.URL.Query())
 }
 
 func (handler *newsHandler) handleItemTopic(request *http.Request) (interface{}, error) {

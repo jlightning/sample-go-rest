@@ -14,7 +14,7 @@ type ITopicRepository interface {
 	UpdateItem(id int, Topic entities.Topic) error
 	DeleteItem(id int) error
 
-	GetListByNewsId(newsId int) ([]entities.Topic, error)
+	GetListByNewsId(newsId int, params map[string][]string) ([]entities.Topic, error)
 	GetItemByNewsId(newsId int, topicId int) (*entities.Topic, error)
 }
 
@@ -101,11 +101,19 @@ func (repository *TopicRepostory) DeleteItem(id int) error {
 	return err
 }
 
-func (repository *TopicRepostory) GetListByNewsId(newsId int) ([]entities.Topic, error) {
-	sql, args, err := squirrel.Select("topic.*").From("topic").
+func (repository *TopicRepostory) GetListByNewsId(newsId int, params map[string][]string) ([]entities.Topic, error) {
+	builder := squirrel.Select("topic.*").From("topic").
 		Join("news_topic ON news_topic.topic_id = topic.id").
-		Where(squirrel.Eq{"news_topic.news_id": newsId}).
-		ToSql()
+		Where(squirrel.Eq{"news_topic.news_id": newsId})
+
+	builder,err := applyFilterAndPageSize(builder, params)
+
+	if err != nil {
+		return nil, err
+	}
+
+	sql, args, err := builder.ToSql()
+
 	if err != nil {
 		return nil, err
 	}

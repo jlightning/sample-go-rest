@@ -11,7 +11,7 @@ type ITopicService interface {
 	InsertItem(topic entities.Topic) error
 	UpdateItem(id int, topic entities.Topic) error
 	DeleteItem(id int) error
-	GetListByNewsId(newsId int) ([]entities.Topic, error)
+	GetListByNewsId(newsId int, params map[string][]string) ([]entities.Topic, error)
 	GetItemByNewsId(newsId int, topicId int) (*entities.Topic, error)
 }
 
@@ -43,8 +43,8 @@ func (service *topicService) DeleteItem(id int) error {
 	return service.topicRepository.DeleteItem(id)
 }
 
-func (service *topicService) GetListByNewsId(newsId int) ([]entities.Topic, error) {
-	return service.topicRepository.GetListByNewsId(newsId)
+func (service *topicService) GetListByNewsId(newsId int, params map[string][]string) ([]entities.Topic, error) {
+	return service.topicRepository.GetListByNewsId(newsId, params)
 }
 
 func (service *topicService) GetItemByNewsId(newsId int, topicId int) (*entities.Topic, error) {
