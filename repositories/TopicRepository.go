@@ -15,6 +15,7 @@ type ITopicRepository interface {
 	DeleteItem(id int) error
 
 	GetListByNewsId(newsId int) ([]entities.Topic, error)
+	GetItemByNewsId(newsId int, topicId int) (*entities.Topic, error)
 }
 
 type TopicRepostory struct {
@@ -38,8 +39,7 @@ func (repository *TopicRepostory) GetList() ([]entities.Topic, error) {
 	list := []entities.Topic{}
 
 	for result.Next() {
-		var topic entities.Topic
-		result.Scan(&topic.Id, &topic.Title)
+		topic := scanTopic(result)
 
 		list = append(list, topic)
 	}
@@ -58,8 +58,7 @@ func (repository *TopicRepostory) GetItemById(id int) (*entities.Topic, error) {
 	}
 
 	for result.Next() {
-		var topic entities.Topic
-		result.Scan(&topic.Id, &topic.Title)
+		topic := scanTopic(result)
 
 		return &topic, nil
 	}
@@ -113,11 +112,38 @@ func (repository *TopicRepostory) GetListByNewsId(newsId int) ([]entities.Topic,
 	list := []entities.Topic{}
 
 	for result.Next() {
-		var topic entities.Topic
-		result.Scan(&topic.Id, &topic.Title)
+		topic := scanTopic(result)
 
 		list = append(list, topic)
 	}
 
 	return list, nil
+}
+
+func (repository *TopicRepostory) GetItemByNewsId(newsId int, topicId int) (*entities.Topic, error) {
+	sql, args, err := squirrel.Select("topic.*").From("topic").
+		Join("news_topic ON news_topic.topic_id = topic.id").
+		Where(squirrel.Eq{"news_topic.news_id": newsId}).
+		ToSql()
+	if err != nil {
+		return nil, err
+	}
+	result, err := repository.db.Query(sql, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	for result.Next() {
+		topic := scanTopic(result)
+
+		return &topic, nil
+	}
+
+	return nil, errors.New("item not found")
+}
+
+func scanTopic(result *sql.Rows) entities.Topic {
+	var topic entities.Topic
+	result.Scan(&topic.Id, &topic.Title)
+	return topic
 }

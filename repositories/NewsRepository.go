@@ -36,8 +36,7 @@ func (repository *newsRepostory) GetList() ([]entities.News, error) {
 	list := []entities.News{}
 
 	for result.Next() {
-		var news entities.News
-		result.Scan(&news.Id, &news.Title, &news.Content)
+		news := scanNews(result)
 
 		list = append(list, news)
 	}
@@ -56,8 +55,7 @@ func (repository *newsRepostory) GetItemById(id int) (*entities.News, error) {
 	}
 
 	for result.Next() {
-		var news entities.News
-		result.Scan(&news.Id, &news.Title, &news.Content)
+		news := scanNews(result)
 
 		return &news, nil
 	}
@@ -93,4 +91,10 @@ func (repository *newsRepostory) DeleteItem(id int) error {
 
 	_, err = repository.db.Exec(sql, args...)
 	return err
+}
+
+func scanNews(result *sql.Rows) entities.News {
+	var news entities.News
+	result.Scan(&news.Id, &news.Title, &news.Content, &news.Status)
+	return news
 }

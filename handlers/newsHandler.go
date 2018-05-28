@@ -11,7 +11,7 @@ import (
 )
 
 type newsHandler struct {
-	newsService services.INewsService
+	newsService  services.INewsService
 	topicService services.ITopicService
 }
 
@@ -27,6 +27,7 @@ func (handler *newsHandler) Register(mux *mux.Router) {
 	mux.HandleFunc("/news/{id:[0-9]+}", wrapFunc(handler.handleDelete)).Methods(http.MethodDelete)
 
 	mux.HandleFunc("/news/{id:[0-9]+}/topics", wrapFunc(handler.handleListTopic)).Methods(http.MethodGet)
+	mux.HandleFunc("/news/{id:[0-9]+}/topics/{topicId:[0-9]+}", wrapFunc(handler.handleItemTopic)).Methods(http.MethodGet)
 	mux.HandleFunc("/news/{id:[0-9]+}/topics/{topicId:[0-9]+}", wrapFunc(handler.handleAddTopicRelationship)).Methods(http.MethodPut)
 	mux.HandleFunc("/news/{id:[0-9]+}/topics/{topicId:[0-9]+}", wrapFunc(handler.handleDeleteTopicRelationship)).Methods(http.MethodDelete)
 }
@@ -122,6 +123,20 @@ func (handler *newsHandler) handleListTopic(request *http.Request) (interface{},
 	}
 
 	return handler.topicService.GetListByNewsId(id)
+}
+
+func (handler *newsHandler) handleItemTopic(request *http.Request) (interface{}, error) {
+	id, err := getRoueParamFromRequest("id", request)
+	if err != nil {
+		return nil, err
+	}
+
+	topicId, err := getRoueParamFromRequest("topicId", request)
+	if err != nil {
+		return nil, err
+	}
+
+	return handler.topicService.GetItemByNewsId(id, topicId)
 }
 
 func getRoueParamFromRequest(key string, request *http.Request) (int, error) {
