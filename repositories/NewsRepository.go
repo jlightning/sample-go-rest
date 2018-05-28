@@ -13,6 +13,9 @@ type INewsRepository interface {
 	InsertItem(news entities.News) error
 	UpdateItem(id int, news entities.News) error
 	DeleteItem(id int) error
+
+	GetListByTopicId(topicId int, params map[string][]string) ([]entities.News, error)
+	GetItemByTopicId(topicId int, newsId int) (*entities.News, error)
 }
 
 type newsRepostory struct {
@@ -96,6 +99,60 @@ func (repository *newsRepostory) DeleteItem(id int) error {
 
 	_, err = repository.db.Exec(sql, args...)
 	return err
+}
+
+func (repository *newsRepostory) GetListByTopicId(topicId int, params map[string][]string) ([]entities.News, error) {
+	builder := squirrel.Select("news.*").From("news").
+		Join("news_topic ON news_topic.news_id = news.id").
+		Where(squirrel.Eq{"news_topic.topic_id": topicId})
+
+	builder,err := applyFilterAndPageSize(builder, params)
+
+	if err != nil {
+		return nil, err
+	}
+
+	sql, args, err := builder.ToSql()
+
+	if err != nil {
+		return nil, err
+	}
+	result, err := repository.db.Query(sql, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	list := []entities.News{}
+
+	for result.Next() {
+		news := scanNews(result)
+
+		list = append(list, news)
+	}
+
+	return list, nil
+}
+
+func (repository *newsRepostory) GetItemByTopicId(topicId int, newsId int) (*entities.News, error) {
+	sql, args, err := squirrel.Select("news.*").From("news").
+		Join("news_topic ON news_topic.news_id = news.id").
+		Where(squirrel.Eq{"news_topic.topic_id": topicId, "news.id": newsId}).
+		ToSql()
+	if err != nil {
+		return nil, err
+	}
+	result, err := repository.db.Query(sql, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	for result.Next() {
+		news := scanNews(result)
+
+		return &news, nil
+	}
+
+	return nil, errors.New("item not found")
 }
 
 func scanNews(result *sql.Rows) entities.News {

@@ -14,6 +14,9 @@ type INewsService interface {
 
 	AddTopic(newsId int, topicId int) error
 	RemoveTopic(newsId int, topicId int) error
+
+	GetListByTopicId(newsId int, params map[string][]string) ([]entities.News, error)
+	GetItemByTopicId(topicId int, newsId int) (*entities.News, error)
 }
 
 type newsService struct {
@@ -51,4 +54,12 @@ func (service *newsService) AddTopic(newsId int, topicId int) error {
 
 func (service *newsService) RemoveTopic(newsId int, topicId int) error {
 	return service.newsTopicRepository.DeleteRelationship(newsId, topicId)
+}
+
+func (service *newsService) GetListByTopicId(topicId int, params map[string][]string) ([]entities.News, error) {
+	return service.newsRepository.GetListByTopicId(topicId, params)
+}
+
+func (service *newsService) GetItemByTopicId(topicId int, newsId int) (*entities.News, error) {
+	return service.newsRepository.GetItemByTopicId(topicId, newsId)
 }

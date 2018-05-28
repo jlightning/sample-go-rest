@@ -26,7 +26,7 @@ func main() {
 	topicService := services.NewTopicService(topicRepository)
 
 	handlers.NewNewsHandler(newsService, topicService).Register(mux)
-	handlers.NewTopicHandler(topicService).Register(mux)
+	handlers.NewTopicHandler(topicService, newsService).Register(mux)
 
 	log.Println("Listening...")
 	http.ListenAndServe(":8080", mux)

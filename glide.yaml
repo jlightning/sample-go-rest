@@ -3,4 +3,6 @@ import:
 - package: github.com/go-sql-driver/mysql
   version: v1.3.0
 - package: github.com/gorilla/mux
+  version: v1.6.2
 - package: github.com/Masterminds/squirrel
+  version: v1.0

@@ -136,7 +136,7 @@ func (repository *TopicRepostory) GetListByNewsId(newsId int, params map[string]
 func (repository *TopicRepostory) GetItemByNewsId(newsId int, topicId int) (*entities.Topic, error) {
 	sql, args, err := squirrel.Select("topic.*").From("topic").
 		Join("news_topic ON news_topic.topic_id = topic.id").
-		Where(squirrel.Eq{"news_topic.news_id": newsId}).
+		Where(squirrel.Eq{"news_topic.news_id": newsId, "topic.id": topicId}).
 		ToSql()
 	if err != nil {
 		return nil, err
