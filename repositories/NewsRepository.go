@@ -106,7 +106,7 @@ func (repository *newsRepostory) GetListByTopicId(topicId int, params map[string
 		Join("news_topic ON news_topic.news_id = news.id").
 		Where(squirrel.Eq{"news_topic.topic_id": topicId})
 
-	builder,err := applyFilterAndPageSize(builder, params)
+	builder, err := applyFilterAndPageSize(builder, params)
 
 	if err != nil {
 		return nil, err
@@ -157,6 +157,6 @@ func (repository *newsRepostory) GetItemByTopicId(topicId int, newsId int) (*ent
 
 func scanNews(result *sql.Rows) entities.News {
 	var news entities.News
-	result.Scan(&news.Id, &news.Title, &news.Content, &news.Status)
+	result.Scan(&news.Id, &news.Title, &news.Content, &news.Status, &news.CreatedAt, &news.UpdatedAt)
 	return news
 }
